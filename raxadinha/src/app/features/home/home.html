@@ -3,8 +3,7 @@
     <div class="hero-conteudo">
       <span class="etiqueta">Conteúdo digital sem complicação</span>
       <h1>Suas ideias merecem <em>ganhar o mundo.</em></h1>
-      <p>O Raxadinha reúne criação, organização e venda de conteúdos digitais em um só lugar — simples para quem publica
-        e agradável para quem compra.</p>
+      <p>O Raxadinha reúne criação, organização e venda de conteúdos digitais em um só lugar — simples para quem publica e agradável para quem compra.</p>
       <div class="acoes">
         <a class="botao botao-primario" routerLink="/conteudos">Explorar conteúdos</a>
         <a class="botao botao-secundario" routerLink="/sobre">Conhecer o projeto</a>
@@ -49,18 +48,17 @@
 
     <div class="trilho" #trilho tabindex="0" aria-label="Carrossel de conteúdos em destaque">
       @for (conteudo of conteudosDestaque$ | async; track conteudo.id) {
-      <article class="card-conteudo">
-        <div class="capa" [class]="'capa ' + conteudo.cor">
-          <span>{{ conteudo.icone }}</span>
-          <small>Raxadinha</small>
-        </div>
-        <div class="card-corpo">
-          <span class="categoria">{{ conteudo.categoria }}</span>
-          <h3>{{ conteudo.titulo }}</h3>
-          <a [routerLink]="['/conteudos', conteudo.id]" [attr.aria-label]="'Conhecer ' + conteudo.titulo">Conhecer
-            <span>→</span></a>
-        </div>
-      </article>
+        <article class="card-conteudo">
+          <div class="capa" [class]="'capa ' + conteudo.cor">
+            <span>{{ conteudo.icone }}</span>
+            <small>Raxadinha</small>
+          </div>
+          <div class="card-corpo">
+            <span class="categoria">{{ conteudo.categoria }}</span>
+            <h3>{{ conteudo.titulo }}</h3>
+            <a [routerLink]="['/conteudos', conteudo.id]" [attr.aria-label]="'Conhecer ' + conteudo.titulo">Conhecer <span>→</span></a>
+          </div>
+        </article>
       }
     </div>
     <p class="dica-arraste">Arraste para o lado para ver mais conteúdos</p>

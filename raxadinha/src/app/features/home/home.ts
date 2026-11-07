@@ -1,25 +1,42 @@
-import { AsyncPipe } from "@angular/common";
-import { Component } from "@angular/core";
-import { RouterLink } from "@angular/router";
-import { map } from "rxjs";
-import { ConteudosService } from "../../core/services/conteudos.service";
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { Observable, map } from 'rxjs';
+import { TrilhaService } from '../../services/trilha.service';
+import { Trilha } from '../../models/trilha.model';
 
 @Component({
-  selector: "app-home",
-  imports: [RouterLink, AsyncPipe],
-  templateUrl: "./home.html",
-  styleUrl: "./home.css",
+  selector: 'app-home',
+  standalone: true,
+  imports: [CommonModule, RouterLink],
+  templateUrl: './home.html',
+  styleUrl: './home.css'
 })
-export class Home {
-  readonly conteudosDestaque$;
+export class HomeComponent implements OnInit {
+  private trilhaService = inject(TrilhaService);
 
-  constructor(conteudosService: ConteudosService) {
-    this.conteudosDestaque$ = conteudosService
-      .listar()
-      .pipe(map((conteudos) => conteudos.slice(0, 10)));
+  conteudosDestaque$!: Observable<any[]>;
+  loading = true;
+
+  ngOnInit(): void {
+    this.carregarDestaques();
   }
 
-  moverCarrossel(trilho: HTMLElement, direcao: number): void {
-    trilho.scrollBy({ left: direcao * 340, behavior: "smooth" });
+  carregarDestaques() {
+    this.conteudosDestaque$ = this.trilhaService.getAll().pipe(
+      map(trilhas => trilhas.map(t => ({
+        id: t.id,
+        titulo: t.nome,
+        categoria: t.dificuldade || 'Geral',
+        cor: 'azul',
+        icone: '🌿'
+      })))
+    );
+    this.loading = false;
+  }
+
+  moverCarrossel(element: HTMLElement, direcao: number) {
+    const scrollAmount = 300 * direcao;
+    element.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   }
 }
