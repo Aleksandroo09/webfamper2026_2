@@ -1,22 +1,26 @@
-import { AsyncPipe, CurrencyPipe } from "@angular/common";
-import { Component } from "@angular/core";
+import { AsyncPipe } from "@angular/common";
+import { Component, inject } from "@angular/core";
 import { ActivatedRoute, RouterLink } from "@angular/router";
-import { map, switchMap } from "rxjs";
-import { ConteudosService } from "../../core/services/conteudos.service";
+import { catchError, map, of, switchMap } from "rxjs";
+import { TrilhaService } from "../../services/trilha.service";
 
 @Component({
   selector: "app-detalhe-conteudo",
-  imports: [AsyncPipe, CurrencyPipe, RouterLink],
+  imports: [AsyncPipe, RouterLink],
   templateUrl: "./detalhe-conteudo.html",
   styleUrl: "./detalhe-conteudo.css",
 })
 export class DetalheConteudo {
-  readonly conteudo$;
+  private route = inject(ActivatedRoute);
+  private trilhaService = inject(TrilhaService);
 
-  constructor(route: ActivatedRoute, conteudosService: ConteudosService) {
-    this.conteudo$ = route.paramMap.pipe(
-      map((parametros) => Number(parametros.get("id"))),
-      switchMap((id) => conteudosService.buscarPorId(id)),
-    );
-  }
+  readonly trilha$ = this.route.paramMap.pipe(
+    map((parametros) => parametros.get("id") ?? ""),
+    switchMap((id) =>
+      this.trilhaService.getById(id).pipe(
+        map((trilha) => (trilha && trilha.nome ? trilha : null)),
+        catchError(() => of(null)),
+      ),
+    ),
+  );
 }
